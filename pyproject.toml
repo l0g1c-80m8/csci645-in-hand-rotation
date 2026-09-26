@@ -31,7 +31,7 @@ cu130 = ["torch==2.9.0", "torchvision==0.24.0"]
 [tool.uv]
 package = true
 no-sources-package = ["mujoco"]
-default-groups = ["cu128"]
+default-groups = ["cu130"]
 conflicts = [[{ group = "cu126" }, { group = "cu128" }, { group = "cu130" }]]
 
 [[tool.uv.index]]
