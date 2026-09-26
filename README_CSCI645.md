@@ -53,6 +53,11 @@ cd <COURSE_REPOSITORY_NAME>
 uv sync
 ```
 
+`uv sync` installs the CUDA 12.8 build of PyTorch, which suits most GPUs. On a
+GB10/DGX Spark (compute capability 12.1) run `uv sync --no-default-groups --group
+cu130` instead; on a pre-Turing GPU or a driver older than 525 use `--group cu126`.
+Only one of these groups can be installed at a time.
+
 This creates a local virtual environment in:
 
 ```text

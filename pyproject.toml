@@ -14,13 +14,39 @@ dependencies = [
   "scipy",
 ]
 
+# PyTorch CUDA backend. Exactly one group is installed and `cu128` is the default,
+# which suits Ampere through Blackwell. Use `cu130` on compute capability 12.1
+# (GB10/DGX Spark, Jetson Thor) and `cu126` for pre-Turing GPUs or drivers older than
+# 525; see "Choosing a CUDA backend" in the README.
+#
+# The groups re-state the pins from [project.dependencies] because uv requires a
+# package to be a member of a group before a group-keyed source can apply to it.
+# Enabling a group therefore only decides which wheel index torch comes from, never
+# which version.
+[dependency-groups]
+cu126 = ["torch==2.9.0", "torchvision==0.24.0"]
+cu128 = ["torch==2.9.0", "torchvision==0.24.0"]
+cu130 = ["torch==2.9.0", "torchvision==0.24.0"]
+
 [tool.uv]
 package = true
 no-sources-package = ["mujoco"]
+default-groups = ["cu128"]
+conflicts = [[{ group = "cu126" }, { group = "cu128" }, { group = "cu130" }]]
 
 [[tool.uv.index]]
 name = "nvidia"
 url = "https://pypi.nvidia.com"
+explicit = true
+
+[[tool.uv.index]]
+name = "pytorch-cu126"
+url = "https://download.pytorch.org/whl/cu126"
+explicit = true
+
+[[tool.uv.index]]
+name = "pytorch-cu128"
+url = "https://download.pytorch.org/whl/cu128"
 explicit = true
 
 [[tool.uv.index]]
@@ -32,5 +58,13 @@ explicit = true
 mjlab = { git = "https://github.com/mujocolab/mjlab", tag = "v1.1.1" }
 mujoco-warp = { git = "https://github.com/google-deepmind/mujoco_warp", rev = "fc9158989525538db53a2a8c3c0f156cbfeca911" }
 warp-lang = { index = "nvidia" }
-torch = { index = "pytorch-cu130" }
-torchvision = { index = "pytorch-cu130" }
+torch = [
+  { index = "pytorch-cu126", group = "cu126" },
+  { index = "pytorch-cu128", group = "cu128" },
+  { index = "pytorch-cu130", group = "cu130" },
+]
+torchvision = [
+  { index = "pytorch-cu126", group = "cu126" },
+  { index = "pytorch-cu128", group = "cu128" },
+  { index = "pytorch-cu130", group = "cu130" },
+]
